@@ -60,6 +60,37 @@
 		compatible = "mmc-pwrseq-simple";
 		reset-gpios = <&pio 6 17 GPIO_ACTIVE_LOW>; /* PG17 */
 	};
+
+	/* HiFiBerry DAC codec */
+	pcm5102a-codec {
+		#sound-dai-cells = <0>;
+		compatible = "ti,pcm5102a";
+		status = "okay";
+	};
+
+	/* Sound card configuration */
+	sound {
+		compatible = "hifiberry,hifiberry-dac";
+		simple-audio-card,name = "HiFiBerry DAC";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&dailink0_master>;
+		simple-audio-card,frame-master = <&dailink0_master>;
+		status = "okay";
+
+		simple-audio-card,cpu {
+			sound-dai = <&i2s2>;
+		};
+
+		dailink0_master: simple-audio-card,codec {
+			sound-dai = <&pcm5102a_codec>;
+		};
+	};
+
+	pcm5102a_codec: pcm5102a-codec {
+		#sound-dai-cells = <0>;
+		compatible = "ti,pcm5102a";
+		status = "okay";
+	};
 };
 
 &cpu0 {
@@ -71,6 +102,11 @@
 };
 
 &ehci1 {
+	status = "okay";
+};
+
+/* Enable I2S interface for audio */
+&i2s2 {
 	status = "okay";
 };
 
